@@ -1,0 +1,4 @@
+ #°²×°mysqlÈÝÆ÷
+ docker pull mysql:5.7
+ #Æô¶¯mysqlÈÝÆ÷
+ docker run --name db001 -p 3306:3306 -e MYSQL_ROOT_PASSWORD=mytest -d mysql:5.7

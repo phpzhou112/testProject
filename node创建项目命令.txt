@@ -1,0 +1,9 @@
+#全局安装express4.x
+npm install -g express-generator@4
+cd e:/node-project
+#创建nodejs项目
+express -e nodejs-demo
+#下载依赖包
+cd nodejs-demo && npm install
+#启动项目
+npm start
