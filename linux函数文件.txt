@@ -1,0 +1,9 @@
+open     linux系统函数
+fopen    标准函数库函数
+fdopen   此函数常用于由创建管道和网络通信通道函数获得的描述符
+	FILE * fp =fdopen(1,”w+”);
+	fprintf(fp,”%s\n”,”hello!”);
+	fclose(fp);
+	
+freopen  freopen是被包含于C标准库头文件<stdio.h>中的一个函数，用于重定向输入输出流
+freopen("D:\\output.txt", "w", stdout) 重定向标准输出到文件
