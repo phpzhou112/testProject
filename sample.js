@@ -201,22 +201,139 @@ var str2 = 'abc';
 
 
 //测试原型缺陷
-function Dog()
-{
-    this.tail = true;
-}
-Dog.prototype.say = function () {
-    return 'wolf';
-}
-var d7 = new Dog();
-var d2 = new Dog();
+// function Dog()
+// {
+//     this.tail = true;
+// }
+// Dog.prototype.say = function () {
+//     return 'wolf';
+// }
+// var d7 = new Dog();
+// var d2 = new Dog();
+//
+// console.log(d7.say());
+// console.log(d7.constructor);
+// console.log(Dog.constructor.prototype);
+// console.log(typeof Dog.prototype);
 
-console.log(d7.say());
-console.log(d7.constructor);
+
+/*
+function Animal() {
+    this.age = 12;
+    this.run = function () {
+        console.log("haha");
+    }
+}
+
+function Dog() {
+    this.name = 'wang';
+}
+
+Dog.prototype = new Animal();
+var dog = new Dog();
+console.log(dog.name);
+console.log(dog.age);
+Dog.prototype.constructor = Dog;
+console.log(Dog.prototype.constructor);
+console.log(Dog.prototype);
 console.log(Dog.constructor.prototype);
-console.log(typeof Dog.prototype);
+*/
+
+//冒充继承
+
+function Parent(fname) {
+    this.fname = fname;
+    this.say = function () {
+        console.log(this.fname + " is running....");
+    }
+}
+
+function Child(name) {
+    this.Parent = Parent;
+    //此行代码相当于把Parent的代码复制了过来
+    this.Parent(name);
+    delete this.Parent;
+    this.sayH = function () {
+        this.say();
+    }
+}
+
+var ch = new Child('child');
+var pa = new Parent('parent');
+pa.say();
+ch.sayH();
 
 
+/**
+ * 临时构造器法，封装继承方法，设定child继承自parent的扩展方法
+ * 此种实现继承不能使用本身的属性，即只能继承原型增加的属性
+ */
+function extend(child, parent) {
+    var F = function () {
+    };
+    F.prototype = parent.prototype;
+    child.prototype = new F();
+    child.prototype.constructor = child;
+    //uber属性：指向父类原型
+    child.uber = parent.prototype;
+}
+//原型属性拷贝法
+function extend2(child, parent) {
+    var p = parent.prototype;
+    var c = child.prototype;
+    for (var i in p) {
+        c[i] = p[i];
+    }
+    c.uber = p;
+}
+
+function child() {
+    this.name='child';
+}
+function parent() {
+   // this.run = 'is run';
+}
+//测试一
+// parent.prototype.run = 'is run';
+// extend(child,parent);
+// var chi = new child();
+// console.log(chi.run);
 
 
+//测试二,只能继承原型属性
+parent.prototype.run = 'is run';
+extend2(child,parent);
+var chi = new child();
+console.log(chi.run);
+
+//浅拷贝
+function extendCopy(p) {
+    var c = {};
+    for(var i in p){
+        c[i] = p[i];
+    }
+    c.uber = p;
+    return c;
+}
+
+//深拷贝
+function deepCopy(p) {
+    var c = c || {};
+    for (var i in p){
+        if(typeof p[i] === 'object'){
+           c[i] = (p[i].constructor === 'Array') ? [] : {};
+        }else
+        {
+            c[i] = p[i];
+        }
+    }
+    return c;
+}
+
+//经典原型继承
+function object(o) {
+    function F(){}
+    F.prototype = o;
+    return new F();
+}
 
