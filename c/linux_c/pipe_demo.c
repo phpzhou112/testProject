@@ -4,6 +4,9 @@
 #include<stdlib.h>
 #include<ctype.h>
 #include<sys/fcntl.h>
+#include<wait.h>
+
+#define MAXSIZE 1024
 
 void TestPipe()
 {
@@ -47,7 +50,7 @@ void TestPipe()
 		{
 			usleep(10000);
 			fprintf(stderr, "Send:");
-			//scanf("%s", szBuf);
+			scanf("%s", szBuf);
 			memset(szBuf, 0, 100);
 			read(0, szBuf, 100);
 			write(fds[1], szBuf, strlen(szBuf));
@@ -153,7 +156,7 @@ void TestDupForPipe()
 			perror("Fail to open");
 			return;
 		}
-
+//		wait(NULL);
 		char szLine[100];
 		
 		while(1)
@@ -200,13 +203,38 @@ void TestPopen()
 	return;
 }
 
+//使用popen实现ps -ef|grep pts
+void TestPopen2()
+{
+	FILE *pread;
+	FILE *pwrite;
+	if(NULL == (pread= popen("ps -ef","r")))
+	{
+		perror("pread popen error");
+		return;
+	}
+	if(NULL == (pwrite=popen("grep pts","w")))
+	{
+		perror("pwrite popen error");
+		pclose(pread);
+		return;
+	}
+	char buf[MAXSIZE];
+	while(fread(buf,MAXSIZE,1,pread))
+	{
+		fwrite(buf,MAXSIZE,1,pwrite);
+	}
+}
+
 int main()
 {
-	//TestPipe();
-	//TestDblPipe();
+//	TestPipe();
+//	TestDblPipe();
 
-	//TestDupForPipe();
+//	TestDupForPipe();
 
-	TestPopen();
+	//TestPopen();
+	TestPopen2();
 	return 0;	
 }
+
