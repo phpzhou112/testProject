@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<h1>web client 的测试!</h1>
+<ul id="myList">
+    <li>Coffee</li>
+    <li>Tea</li>
+</ul>
+</body>
+</html>
+
+<script type="text/javascript">
+
+    function connect() {
+        //js的web socket
+        var sock = new WebSocket('ws://192.168.1.82:9502');
+
+        sock.onopen = function (events) {
+            var obj = '{"id":1}';
+            sock.send(obj);
+            // 监听消息
+            sock.onmessage = function(event) {
+
+                console.log('Client received a message',JSON.parse(event.data));
+                if(event.data){
+                    //var message = event.data;
+                   // console.log(message);
+                    var info = JSON.parse(event.data);
+                    if(info.out == 1){
+                        var node=document.createElement("LI");
+                        var textnode=document.createTextNode("Water");
+                        node.appendChild(textnode);
+                        document.getElementById("myList").appendChild(node);
+                    }
+                }
+
+            };
+
+            // 监听Socket的关闭
+            sock.onclose = function(event) {
+                console.log('Client notified socket has closed',event);
+            };
+        };
+    }
+
+   //sock.close();
+    connect();
+    //setTimeout('connect', 5000);
+    //setInterval("connect()", 10000);
+
+</script>
