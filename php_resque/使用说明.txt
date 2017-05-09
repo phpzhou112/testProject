@@ -1,0 +1,24 @@
+安装Redis
+apt-get install redis-server
+
+安装Composer
+apt-get install curl
+cd /usr/local/bin
+curl -s http://getcomposer.org/installer | php
+chmod a+x composer.phar
+alias composer='/usr/local/bin/composer.phar'
+
+使用Composer安装php-resque
+假设web目录在/opt/htdocs
+
+apt-get install git git-core
+cd /opt/htdocs
+git clone git://github.com/chrisboulton/php-resque.git
+cd php-resque
+composer install
+
+#关于使用
+本项目是在example目录下新建的send_demo目录，实现发送邮件功能
+运行:
+客户端实现生产队列，运行queue.php文件，把数据放入队列
+服务端 QUEUE=default php send_demo/resque.php 指定为default队列，进行消费
